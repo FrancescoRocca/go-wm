@@ -1,2 +1,6 @@
 github.com/francescorocca/go-xlib v0.0.0-20251126162632-36dd9d7fa5e5 h1:UpAENpyPQ1CTV5ooCbRn1qlJ3jgDJzUlEl8uxgQNGBc=
 github.com/francescorocca/go-xlib v0.0.0-20251126162632-36dd9d7fa5e5/go.mod h1:vwoIq5M1iT7mLSMR96cEdJCWel7qeimeNPfMpwoJXF8=
+github.com/francescorocca/go-xlib v0.1.0 h1:ayIUSn8Y065mJRlhyaK6GbGf/l4SIa9T9lzF581H4N8=
+github.com/francescorocca/go-xlib v0.1.0/go.mod h1:vwoIq5M1iT7mLSMR96cEdJCWel7qeimeNPfMpwoJXF8=
+github.com/francescorocca/go-xlib v0.1.1 h1:uH7YqwfOj4J2ok/1sgAPftaDmZO8fcBXJIusYScz6Ro=
+github.com/francescorocca/go-xlib v0.1.1/go.mod h1:vwoIq5M1iT7mLSMR96cEdJCWel7qeimeNPfMpwoJXF8=
