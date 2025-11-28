@@ -6,12 +6,21 @@ import (
 	"github.com/francescorocca/go-xlib"
 )
 
+const (
+	MouseBtnLeft   = 1
+	MouseBtnMiddle = 2
+	MouseBtnRight  = 3
+	KeyWin         = xlib.Mod4Mask
+	NumLock        = xlib.Mod2Mask
+	CapsLock       = xlib.LockMask
+)
+
 func grabKeyWithMasks(display *xlib.Display, keycode uint, mods uint) {
 	masks := []uint{
 		0,
-		xlib.Mod2Mask,                 // NumLock
-		xlib.LockMask,                 // CapsLock
-		xlib.Mod2Mask | xlib.LockMask, // NumLock + CapsLock
+		NumLock,
+		CapsLock,
+		NumLock | CapsLock,
 	}
 
 	for _, m := range masks {
@@ -29,13 +38,11 @@ func grabKeyWithMasks(display *xlib.Display, keycode uint, mods uint) {
 }
 
 func (wm *WindowManager) setupGrabs() error {
-	// Grab WIN + Enter
-	grabKeyWithMasks(wm.display, wm.retkeycode, xlib.Mod4Mask)
+	grabKeyWithMasks(wm.display, wm.retkeycode, KeyWin)
 
-	// Grab mouse buttons (1 = move, 3 = resize)
 	if err := wm.display.GrabButton(
-		1,
-		xlib.Mod4Mask,
+		MouseBtnLeft,
+		KeyWin,
 		wm.root,
 		xlib.True,
 		xlib.ButtonPressMask|xlib.ButtonReleaseMask|xlib.PointerMotionMask,
@@ -49,8 +56,8 @@ func (wm *WindowManager) setupGrabs() error {
 	}
 
 	if err := wm.display.GrabButton(
-		3,
-		xlib.Mod4Mask,
+		MouseBtnRight,
+		KeyWin,
 		wm.root,
 		xlib.True,
 		xlib.ButtonPressMask|xlib.ButtonReleaseMask|xlib.PointerMotionMask,
@@ -69,10 +76,9 @@ func (wm *WindowManager) setupGrabs() error {
 func (wm *WindowManager) handleKeyPress(ev xlib.Event) {
 	ke := ev.AsKeyEvent()
 	log.Printf("KeyPress keycode=%d state=0x%x\n", ke.Keycode, ke.State)
-	log.Printf("\t(ret=%d, Mod4Mask=0x%x)\n", wm.retkeycode, xlib.Mod4Mask)
+	log.Printf("\t(ret=%d, KeyWin=0x%x)\n", wm.retkeycode, xlib.Mod4Mask)
 
-	// WIN + Enter -> launcher
-	if ke.Keycode == wm.retkeycode && (ke.State&xlib.Mod4Mask) != 0 {
+	if ke.Keycode == wm.retkeycode && (ke.State&KeyWin) != 0 {
 		log.Println("WIN+Enter detected -> launcher")
 		wm.runLauncher()
 	}

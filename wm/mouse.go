@@ -11,8 +11,6 @@ type mouseState struct {
 	attr  xlib.WindowAttributes
 }
 
-var ms mouseState
-
 func (wm *WindowManager) handleButtonPress(ev xlib.Event) {
 	be := ev.AsButtonEvent()
 	log.Printf("ButtonPress button=%d subwindow=%d xroot=%d yroot=%d state=0x%x\n",
@@ -23,8 +21,8 @@ func (wm *WindowManager) handleButtonPress(ev xlib.Event) {
 		if err != nil {
 			log.Println("GetWindowAttributes error:", err)
 		}
-		ms.attr = attr
-		ms.start = *be
+		wm.ms.attr = attr
+		wm.ms.start = *be
 
 		wm.display.GrabPointer(
 			be.Subwindow,
@@ -40,20 +38,20 @@ func (wm *WindowManager) handleButtonPress(ev xlib.Event) {
 }
 
 func (wm *WindowManager) handleMotionNotify(ev xlib.Event) {
-	if ms.start.Subwindow == xlib.NoneWindow() {
+	if wm.ms.start.Subwindow == xlib.NoneWindow() {
 		return
 	}
 
 	me := ev.AsButtonEvent()
-	xdiff := me.XRoot - ms.start.XRoot
-	ydiff := me.YRoot - ms.start.YRoot
+	xdiff := me.XRoot - wm.ms.start.XRoot
+	ydiff := me.YRoot - wm.ms.start.YRoot
 
-	x := ms.attr.X
-	y := ms.attr.Y
-	w := uint(ms.attr.Width)
-	h := uint(ms.attr.Height)
+	x := wm.ms.attr.X
+	y := wm.ms.attr.Y
+	w := uint(wm.ms.attr.Width)
+	h := uint(wm.ms.attr.Height)
 
-	switch ms.start.Button {
+	switch wm.ms.start.Button {
 	case 1:
 		// WIN + left click = MOVE
 		x += xdiff
@@ -62,15 +60,15 @@ func (wm *WindowManager) handleMotionNotify(ev xlib.Event) {
 	case 3:
 		// WIN + right click = RESIZE
 		if int(w)+int(xdiff) > 1 {
-			w = uint(int(ms.attr.Width) + int(xdiff))
+			w = uint(int(wm.ms.attr.Width) + int(xdiff))
 		}
 		if int(h)+int(ydiff) > 1 {
-			h = uint(int(ms.attr.Height) + int(ydiff))
+			h = uint(int(wm.ms.attr.Height) + int(ydiff))
 		}
 	}
 
 	wm.display.MoveResizeWindow(
-		ms.start.Subwindow,
+		wm.ms.start.Subwindow,
 		x,
 		y,
 		w,
@@ -84,5 +82,5 @@ func (wm *WindowManager) handleButtonRelease(ev xlib.Event) {
 		br.Button, br.Subwindow, br.XRoot, br.YRoot)
 
 	wm.display.UngrabPointer(xlib.CurrentTime)
-	ms.start.Subwindow = xlib.NoneWindow()
+	wm.ms.start.Subwindow = xlib.NoneWindow()
 }

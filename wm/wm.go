@@ -13,6 +13,7 @@ type WindowManager struct {
 	width, height int
 	display       *xlib.Display
 	retkeycode    uint
+	ms            mouseState
 }
 
 func InitWM() (*WindowManager, error) {

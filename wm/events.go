@@ -52,11 +52,11 @@ func (wm *WindowManager) handleConfigureRequest(ev xlib.Event) {
 	}
 	if (cr.ValueMask & xlib.CWWidth) != 0 {
 		mask |= xlib.CWWidth
-		changes.Width = wm.width
+		changes.Width = cr.Width
 	}
 	if (cr.ValueMask & xlib.CWHeight) != 0 {
 		mask |= xlib.CWHeight
-		changes.Height = wm.height
+		changes.Height = cr.Height
 	}
 	if (cr.ValueMask & xlib.CWBorderWidth) != 0 {
 		mask |= xlib.CWBorderWidth
